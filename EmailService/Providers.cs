@@ -4,7 +4,12 @@ using System.Text;
 
 namespace EmailService
 {
-    class Providers
+    public class Providers
     {
+        Mailgun mailgun = new Mailgun();
+        SendGrid sendgrid = new SendGrid();
+        AmazonSES amazonses = new AmazonSES();
+
+        private string providerName;
     }
 }
