@@ -18,8 +18,6 @@ namespace EmailService
             emailsInList = ReadEmailFile(fileName);
 
             ParseEmail(emailsInList);
-            
-
             Console.ReadLine();
 
         }
