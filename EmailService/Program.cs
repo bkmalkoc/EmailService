@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -8,38 +9,49 @@ namespace EmailService
     {
         static void Main(string[] args)
         {
-
-            //string contents = File.ReadAllText(@"C:\temp\test.txt");
-            ReadAndDisplayFilesAsync();
+            Console.WriteLine("Enter file name: ");
+            String fileName = Console.ReadLine();
+            ReadAndDisplayFilesAsync(fileName);
 
             Console.ReadLine();
+
         }
 
-        private async static void ReadAndDisplayFilesAsync()
+        private static void ReadAndDisplayFilesAsync(String fileInput)
         {
+            String file = fileInput;
 
-            String filename = "input.txt";
-            byte[] byteArray = Encoding.UTF8.GetBytes(filename);
-            MemoryStream stream = new MemoryStream(byteArray);
-
-            try
+            string text;
+            var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
             {
-                using (StreamReader sr = new StreamReader(stream))
+                text = streamReader.ReadToEnd();
+            }
+            Console.WriteLine(text);
+
+
+            string[] lines;
+            var list = new List<string>();
+            var fileStream2 = new FileStream(file, FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream2, Encoding.UTF8))
+            {
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
                 {
-                    string line;
-                    line = sr.ReadToEnd();
-                    // Read and display lines from the file until the end of 
-                    // the file is reached.
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine(line);
-                    }
+                    list.Add(line);
                 }
             }
-            catch(Exception e)
+            lines = list.ToArray();
+
+
+            var fileStream3 = new FileStream(file, FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream3, Encoding.UTF8))
             {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    Console.WriteLine(line);
+                }
             }
 
         }
