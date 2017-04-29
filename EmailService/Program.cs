@@ -11,27 +11,31 @@ namespace EmailService
         {
             Console.WriteLine("Enter file name: ");
             String fileName = Console.ReadLine();
-            ReadAndDisplayFilesAsync(fileName);
+
+            List<String> emailsInList = new List<string>();
+            emailsInList = ReadEmailFile(fileName);
+
+            ParseEmail(emailsInList);
+            
 
             Console.ReadLine();
 
         }
 
-        private static void ReadAndDisplayFilesAsync(String fileInput)
+        private static List<String> ReadEmailFile(String fileInput)
         {
             String file = fileInput;
 
-            string text;
-            var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-            {
-                text = streamReader.ReadToEnd();
-            }
-            Console.WriteLine(text);
+            //string text;
+            //var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+            //using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            //{
+            //    text = streamReader.ReadToEnd();
+            //}
+            //Console.WriteLine(text);
 
-
-            string[] lines;
             var list = new List<string>();
+
             var fileStream2 = new FileStream(file, FileMode.Open, FileAccess.Read);
             using (var streamReader = new StreamReader(fileStream2, Encoding.UTF8))
             {
@@ -41,18 +45,34 @@ namespace EmailService
                     list.Add(line);
                 }
             }
-            lines = list.ToArray();
+            list.ForEach(x => Console.WriteLine(x + ", "));
+            return list;
+        }
 
+        private static void ParseEmail(List<String> emailsList)
+        {
+            string[] seperatingSenderAndReciever = { " " };
+            EmailSections emailSection = new EmailSections();
+            string[] words = new string[2];
 
-            var fileStream3 = new FileStream(file, FileMode.Open, FileAccess.Read);
-            using (var streamReader = new StreamReader(fileStream3, Encoding.UTF8))
+            foreach (var item in emailsList)
             {
-                string line;
-                while ((line = streamReader.ReadLine()) != null)
-                {
-                    Console.WriteLine(line);
-                }
+                words = item.Split(seperatingSenderAndReciever, System.StringSplitOptions.RemoveEmptyEntries);
             }
+
+            emailSection.EmailSender = words[0];
+            emailSection.EmailReceiver = words[1];            
+        }
+
+        private static void SendEmails(List<EmailSections> email)
+        {
+            Providers providers = new Providers();
+            
+
+        }
+
+        private static void ResultsOfEmailSendProcess()
+        {
 
         }
     }
