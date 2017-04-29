@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace EmailService
 {
@@ -10,9 +12,9 @@ namespace EmailService
         static void Main(string[] args)
         {
             Console.WriteLine("Enter file name: ");
-            String fileName = Console.ReadLine();
+            string fileName = Console.ReadLine();
 
-            List<String> emailsInList = new List<string>();
+            List<string> emailsInList = new List<string>();
             emailsInList = ReadEmailFile(fileName);
 
             ParseEmail(emailsInList);
@@ -22,20 +24,10 @@ namespace EmailService
 
         }
 
-        private static List<String> ReadEmailFile(String fileInput)
+        private static List<string> ReadEmailFile(string fileInput)
         {
             String file = fileInput;
-
-            //string text;
-            //var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
-            //using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-            //{
-            //    text = streamReader.ReadToEnd();
-            //}
-            //Console.WriteLine(text);
-
             var list = new List<string>();
-
             var fileStream2 = new FileStream(file, FileMode.Open, FileAccess.Read);
             using (var streamReader = new StreamReader(fileStream2, Encoding.UTF8))
             {
@@ -49,19 +41,23 @@ namespace EmailService
             return list;
         }
 
-        private static void ParseEmail(List<String> emailsList)
+        private static List<EmailSections> ParseEmail(List<string> emailsList)
         {
-            string[] seperatingSenderAndReciever = { " " };
-            EmailSections emailSection = new EmailSections();
-            string[] words = new string[2];
+            char[] seperatingSenderAndReciever = { ' '};
+
+            List<EmailSections> emailDetailList = new List<EmailSections>();
 
             foreach (var item in emailsList)
             {
-                words = item.Split(seperatingSenderAndReciever, System.StringSplitOptions.RemoveEmptyEntries);
+                string[] words = item.Split(seperatingSenderAndReciever);
+                EmailSections emailSections = new EmailSections()
+                {
+                    EmailSender = words[0],
+                    EmailReceiver = words[1]
+                };
+                emailDetailList.Add(emailSections);
             }
-
-            emailSection.EmailSender = words[0];
-            emailSection.EmailReceiver = words[1];            
+            return emailDetailList;
         }
 
         private static void SendEmails(List<EmailSections> email)
