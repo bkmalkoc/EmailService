@@ -43,25 +43,48 @@ namespace EmailService
         {
             List<EmailSections> emailDetailList = new List<EmailSections>();
             
-            foreach (var item in emailsList)
-            {
-                var parts = Regex.Matches(item, @"[\""].+?[\""]|[^ ]+")
-                    .Cast<Match>()
-                    .Select(m => m.Value)
-                    .ToList();
+            //foreach (var item in emailsList)
+            //{
+            //    var parts = Regex.Matches(item, @"[\""].+?[\""]|[^ ]+")
+            //        .Cast<Match>()
+            //        .Select(m => m.Value)
+            //        .ToList();
 
-                string subject = parts[2].Replace("\"", "");
-                string body = parts[3].Replace("\"", "");
+            //    string subject = parts[2].Replace("\"", "");
+            //    string body = parts[3].Replace("\"", "");
+
+            //    EmailSections emailSections = new EmailSections()
+            //    {
+            //        EmailSender = parts[0],
+            //        EmailReceiver = parts[1],
+            //        EmailSubject = subject,
+            //        EmailBody = body
+            //    };
+            //    emailDetailList.Add(emailSections);
+            //}
+
+            foreach(var item in emailsList)
+            {
+                string senderEmail = item.Substring(0, item.IndexOf(" ", StringComparison.Ordinal));
+                string receiverEmail = item.Substring(senderEmail.Length + 1, item.IndexOf(" ", senderEmail.Length + 1) - senderEmail.Length);
+
+                int firstQuote = item.IndexOf("\"", StringComparison.Ordinal);
+                string subjectandBody = item.Substring(firstQuote, item.Length - item.IndexOf("\"", firstQuote, StringComparison.Ordinal));
+
+                String[] words = subjectandBody.Split(new string[] { "\" \"" }, StringSplitOptions.None);
+                string subjectEmail = words[0].Remove(0, 1);
+                string bodyEmail = words[1].Remove(words[1].Length - 1);
 
                 EmailSections emailSections = new EmailSections()
                 {
-                    EmailSender = parts[0],
-                    EmailReceiver = parts[1],
-                    EmailSubject = subject,
-                    EmailBody = body
+                    EmailSender = senderEmail,
+                    EmailReceiver = receiverEmail,
+                    EmailSubject = subjectEmail,
+                    EmailBody = bodyEmail
                 };
                 emailDetailList.Add(emailSections);
             }
+
             return emailDetailList;
         }
 
@@ -71,7 +94,6 @@ namespace EmailService
 
             foreach (var item in emailList)
             {
-                //provider
             }
 
         }

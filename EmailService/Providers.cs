@@ -10,5 +10,7 @@ namespace EmailService
         SendGrid sendgrid = new SendGrid();
         AmazonSES amazonses = new AmazonSES();
 
+        private void UseMailGun() { }
+        
     }
 }
