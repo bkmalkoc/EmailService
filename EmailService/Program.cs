@@ -7,9 +7,9 @@ using System.Text.RegularExpressions;
 
 namespace EmailService
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.WriteLine("Enter file name: ");
             string fileName = Console.ReadLine();
@@ -41,27 +41,38 @@ namespace EmailService
 
         private static List<EmailSections> ParseEmail(List<string> emailsList)
         {
-            char[] seperatingSenderAndReciever = { ' '};
-
             List<EmailSections> emailDetailList = new List<EmailSections>();
-
+            
             foreach (var item in emailsList)
             {
-                string[] words = item.Split(seperatingSenderAndReciever);
+                var parts = Regex.Matches(item, @"[\""].+?[\""]|[^ ]+")
+                    .Cast<Match>()
+                    .Select(m => m.Value)
+                    .ToList();
+
+                string subject = parts[2].Replace("\"", "");
+                string body = parts[3].Replace("\"", "");
+
                 EmailSections emailSections = new EmailSections()
                 {
-                    EmailSender = words[0],
-                    EmailReceiver = words[1]
+                    EmailSender = parts[0],
+                    EmailReceiver = parts[1],
+                    EmailSubject = subject,
+                    EmailBody = body
                 };
                 emailDetailList.Add(emailSections);
             }
             return emailDetailList;
         }
 
-        private static void SendEmails(List<EmailSections> email)
+        private static void SendEmails(List<EmailSections> emailList)
         {
             Providers providers = new Providers();
-            
+
+            foreach (var item in emailList)
+            {
+                //provider
+            }
 
         }
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EmailService
 {
-    class EmailSections
+    public class EmailSections
     {
         public string EmailSender { get; set; }
         public string EmailReceiver { get; set; }
