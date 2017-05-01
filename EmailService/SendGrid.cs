@@ -6,14 +6,34 @@ namespace EmailService
 {
     class SendGrid : IEmail
     {
-        public void Connect()
+        public bool Connect()
         {
-            Console.WriteLine("SendGrid connection setup");
+            string connection = "success";
+            
+            for (int i = 0; i < 7; i++)
+            {
+                if (connection.Equals("success"))
+                {
+                    Console.WriteLine("SendGrid connection successful");
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public void Send()
+        public bool Send(EmailSections emailSections)
         {
-            Console.WriteLine("SendGrid email sent");
+            string connection = "success";
+
+            for (int i = 0; i < 7; i++)
+            {
+                if (connection.Equals("success"))
+                {
+                    Console.WriteLine("Email sent to SendGrid");
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -16,10 +16,10 @@ namespace EmailService
 
             List<string> emailsInList = new List<string>();
             emailsInList = ReadEmailFile(fileName);
-
-            ParseEmail(emailsInList);
+            List<EmailSections> parsedEmails = ParseEmail(emailsInList);
+            List<EmailSuccessResult> emailResult = new List<EmailSuccessResult>();
+            emailResult = SendEmails(parsedEmails);
             Console.ReadLine();
-
         }
 
         private static List<string> ReadEmailFile(string fileInput)
@@ -42,26 +42,6 @@ namespace EmailService
         private static List<EmailSections> ParseEmail(List<string> emailsList)
         {
             List<EmailSections> emailDetailList = new List<EmailSections>();
-            
-            //foreach (var item in emailsList)
-            //{
-            //    var parts = Regex.Matches(item, @"[\""].+?[\""]|[^ ]+")
-            //        .Cast<Match>()
-            //        .Select(m => m.Value)
-            //        .ToList();
-
-            //    string subject = parts[2].Replace("\"", "");
-            //    string body = parts[3].Replace("\"", "");
-
-            //    EmailSections emailSections = new EmailSections()
-            //    {
-            //        EmailSender = parts[0],
-            //        EmailReceiver = parts[1],
-            //        EmailSubject = subject,
-            //        EmailBody = body
-            //    };
-            //    emailDetailList.Add(emailSections);
-            //}
 
             foreach(var item in emailsList)
             {
@@ -70,7 +50,7 @@ namespace EmailService
 
                 int firstQuote = item.IndexOf("\"", StringComparison.Ordinal);
                 string subjectandBody = item.Substring(firstQuote, item.Length - item.IndexOf("\"", firstQuote, StringComparison.Ordinal));
-
+                
                 String[] words = subjectandBody.Split(new string[] { "\" \"" }, StringSplitOptions.None);
                 string subjectEmail = words[0].Remove(0, 1);
                 string bodyEmail = words[1].Remove(words[1].Length - 1);
@@ -88,19 +68,73 @@ namespace EmailService
             return emailDetailList;
         }
 
-        private static void SendEmails(List<EmailSections> emailList)
+        private static List<EmailSuccessResult> SendEmails(List<EmailSections> emailList)
         {
-            Providers providers = new Providers();
-
+            List<EmailSuccessResult> emailResults = new List<EmailSuccessResult>(); 
             foreach (var item in emailList)
             {
+                emailResults = SendEmail(item, emailResults);
             }
-
+            return emailResults;
         }
-
-        private static void ResultsOfEmailSendProcess()
+        
+        private static List<EmailSuccessResult> SendEmail(EmailSections emailList, List<EmailSuccessResult> emailSuccessResultList)
         {
+            //List<EmailSuccessResult> emailSuccessResultList = new List<EmailSuccessResult>();
 
+            Providers providers = new Providers();
+            bool sent = false;
+            List<int> usedNumbers = new List<int>();
+            int attempt = 0;
+
+            while (!sent && attempt < 10)
+            {
+                int randomForProvider = GenerateNumberForProvider(usedNumbers);
+                usedNumbers.Add(randomForProvider);
+
+                IEmail emailProvider = providers.EmailProviders.ElementAt(randomForProvider);
+                sent = emailProvider.Connect();
+                if (!sent)
+                {
+                    attempt++;
+                    continue;
+                }
+                else
+                {
+                    sent = emailProvider.Send(emailList);
+                    if (sent)
+                    {
+                        emailSuccessResultList.Add(
+                            new EmailSuccessResult
+                            {
+                                EmailSender = emailList.EmailSender,
+                                Provider = emailProvider.ToString()
+                            });
+                    }
+                    else
+                    {
+                        attempt++;
+                    }
+                }
+            }
+            return emailSuccessResultList;
         }
+
+        private static int GenerateNumberForProvider(List<int> usedNumbers)
+        {
+            Random random = new Random();
+            bool okay = false;
+            int randomNumber = 0;
+            while (!okay)
+            {
+                randomNumber = random.Next(0, 3);
+                if (!usedNumbers.Contains(randomNumber))
+                {
+                    okay = true;
+                }
+            }
+            return randomNumber;
+        }
+
     }
 }

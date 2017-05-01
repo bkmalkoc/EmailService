@@ -4,16 +4,36 @@ using System.Text;
 
 namespace EmailService
 {
-    class Mailgun : IEmail
+    public class Mailgun : IEmail
     {
-        public void Connect()
+        public bool Connect()
         {
-            Console.WriteLine("Mailgun connection setup");
+            string connection = "false";
+            
+            for (int i = 0; i < 7; i++)
+            {
+                if (connection.Equals("success"))
+                {
+                    Console.WriteLine("Mailgun connection successful");
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public void Send()
+        public bool Send(EmailSections emailSections)
         {
-            Console.WriteLine("Mailgun email sent");
+            string connection = "success";
+
+            for (int i = 0; i < 7; i++)
+            {
+                if (connection.Equals("success"))
+                {
+                    Console.WriteLine("Email sent to Mailgun");
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -6,14 +6,34 @@ namespace EmailService
 {
     class AmazonSES : IEmail
     {
-        public void Connect()
+        public bool Connect()
         {
-            Console.WriteLine("AmazonSES connection setup");
+            string connection = "success";
+            
+            for(int i = 0; i < 7; i++)
+            {
+                if (connection.Equals("success"))
+                {
+                    Console.WriteLine("AmazonSES connection successful");
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public void Send()
+        public bool Send(EmailSections emailSections)
         {
-            Console.WriteLine("AmazonSES email sent");
+            string connection = "success";
+
+            for (int i = 0; i < 7; i++)
+            {
+                if (connection.Equals("success"))
+                {
+                    Console.WriteLine("Email sent to AmazonSES");
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

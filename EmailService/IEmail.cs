@@ -6,7 +6,7 @@ namespace EmailService
 {
     public interface IEmail
     {
-        void Connect();
-        void Send();
+        bool Connect();
+        bool Send(EmailSections emailsections);
     }
 }

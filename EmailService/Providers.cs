@@ -6,11 +6,43 @@ namespace EmailService
 {
     public class Providers
     {
-        Mailgun mailgun = new Mailgun();
-        SendGrid sendgrid = new SendGrid();
-        AmazonSES amazonses = new AmazonSES();
+        public List<IEmail> EmailProviders;
 
-        private void UseMailGun() { }
-        
+        Mailgun mailgun = new Mailgun();
+        SendGrid sendGrid = new SendGrid();
+        AmazonSES amazonSes = new AmazonSES();
+
+        public Providers()
+        {
+            EmailProviders = new List<IEmail>();
+            
+            EmailProviders.Add(mailgun);
+            EmailProviders.Add(sendGrid);
+            EmailProviders.Add(amazonSes);
+        }
+
+        //List of Providers
+
+
+        //public int UseMailGun(EmailSections emailSections)
+        //{
+        //    int result = 0;
+        //    result = mailgun.Connect();
+        //    if(result == 0)
+        //    {
+        //        mailgun.Send(emailSections);
+        //    }
+        //    return result;
+        //}
+
+        //public int UseSendGrid()
+        //{
+        //    return sendgrid.Connect();
+        //}
+
+        //public int UseAmazonSES()
+        //{
+        //    return amazonses.Connect();
+        //}
     }
 }
