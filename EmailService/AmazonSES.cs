@@ -11,7 +11,7 @@ namespace EmailService
             Random random = new Random();
             int randomNumber = random.Next(0, 9);
 
-            while (randomNumber > 2)
+            while (randomNumber > 5)
             {
                 return true;
             }

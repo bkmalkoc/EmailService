@@ -25,6 +25,18 @@ namespace EmailService
             List<EmailSections> parsedEmails = ParseEmail(emailsInList);
             List<EmailSuccessResult> emailResult = new List<EmailSuccessResult>();
             emailResult = SendEmails(parsedEmails);
+            Console.WriteLine("Output: ");
+            foreach (var item in emailResult)
+            {
+                Console.Write(item.EmailSender + " ");
+                Console.Write(item.Attempt + " ");
+                item.Providers.ForEach(x => Console.Write(x + ", "));
+                Console.WriteLine();
+            }
+            //if (emailResult.Select(x => x.Providers).Count() > 0)
+            //{
+                
+            //}
             Console.ReadLine();
         }
 
@@ -108,15 +120,15 @@ namespace EmailService
             int sentAttempt = 0;
             List<string> providersList = new List<string>();
 
-            while (!sent && attempt < 10)
+            while (!sent)
             {
-                int randomForProvider = GenerateNumberForProvider(usedNumbers);
                 if (usedNumbers.Count() == 3) { break; }
+                int randomForProvider = GenerateNumberForProvider(usedNumbers);
                 usedNumbers.Add(randomForProvider);
                 IEmail emailProvider = providers.EmailProviders.ElementAt(randomForProvider);
                 sent = emailProvider.Connect();
                 EmailSuccessResult emailSuccessResult = new EmailSuccessResult();
-                if (!sent && sentAttempt < 0)
+                if (!sent)
                 {
                     if (emailSuccessResultList.Where(x => x.EmailSender.Equals(emailList.EmailSender)).Count() > 0) 
                     {
