@@ -11,11 +11,23 @@ namespace EmailService
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Enter file name: ");
-            string fileName = Console.ReadLine();
-
             List<string> emailsInList = new List<string>();
-            emailsInList = ReadEmailFile(fileName);
+            if (args.Length > 0)
+            {
+                emailsInList = ReadEmailFile(args[0]);
+            }
+            else
+            {
+                Console.WriteLine("Enter file name: ");
+                string fileName = Console.ReadLine();
+                emailsInList = ReadEmailFile(fileName);
+            }
+
+            //Console.WriteLine("Enter file name: ");
+            //string fileName = Console.ReadLine();
+            //emailsInList = ReadEmailFile(fileName);
+            
+
             List<EmailSections> parsedEmails = ParseEmail(emailsInList);
             List<EmailSuccessResult> emailResult = new List<EmailSuccessResult>();
             emailResult = SendEmails(parsedEmails);

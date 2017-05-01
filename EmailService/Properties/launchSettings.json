@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EmailService": {
+      "commandName": "Project",
+      "commandLineArgs": "input.txt"
+    }
+  }
+}
