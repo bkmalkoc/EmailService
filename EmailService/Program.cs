@@ -23,18 +23,13 @@ namespace EmailService
                 emailsInList = ReadEmailFile(fileName);
             }
 
-            //Console.WriteLine("Enter file name: ");
-            //string fileName = Console.ReadLine();
-            //emailsInList = ReadEmailFile(fileName);
-            
-
             List<EmailSections> parsedEmails = ParseEmail(emailsInList);
             List<EmailSuccessResult> emailResult = new List<EmailSuccessResult>();
             emailResult = SendEmails(parsedEmails);
             Console.ReadLine();
         }
 
-        private static List<string> ReadEmailFile(string fileInput)
+        public static List<string> ReadEmailFile(string fileInput)
         {
             String file = fileInput;
             var list = new List<string>();
@@ -51,7 +46,7 @@ namespace EmailService
             return list;
         }
 
-        private static List<EmailSections> ParseEmail(List<string> emailsList)
+        public static List<EmailSections> ParseEmail(List<string> emailsList)
         {
             List<EmailSections> emailDetailList = new List<EmailSections>();
 
@@ -80,7 +75,7 @@ namespace EmailService
             return emailDetailList;
         }
 
-        private static List<EmailSuccessResult> SendEmails(List<EmailSections> emailList)
+        public static List<EmailSuccessResult> SendEmails(List<EmailSections> emailList)
         {
             List<EmailSuccessResult> emailResults = new List<EmailSuccessResult>(); 
             foreach (var item in emailList)
@@ -89,8 +84,8 @@ namespace EmailService
             }
             return emailResults;
         }
-        
-        private static List<EmailSuccessResult> SendEmail(EmailSections emailList, List<EmailSuccessResult> emailSuccessResultList)
+
+        public static List<EmailSuccessResult> SendEmail(EmailSections emailList, List<EmailSuccessResult> emailSuccessResultList)
         {
             //List<EmailSuccessResult> emailSuccessResultList = new List<EmailSuccessResult>();
 
@@ -132,7 +127,7 @@ namespace EmailService
             return emailSuccessResultList;
         }
 
-        private static int GenerateNumberForProvider(List<int> usedNumbers)
+        public static int GenerateNumberForProvider(List<int> usedNumbers)
         {
             Random random = new Random();
             bool okay = false;
