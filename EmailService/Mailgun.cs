@@ -8,30 +8,24 @@ namespace EmailService
     {
         public bool Connect()
         {
-            string connection = "false";
-            
-            for (int i = 0; i < 7; i++)
+            Random random = new Random();
+            int randomNumber = random.Next(0, 9);
+
+            while (randomNumber > 2)
             {
-                if (connection.Equals("success"))
-                {
-                    Console.WriteLine("Mailgun connection successful");
-                    return true;
-                }
+                return true;
             }
             return false;
         }
 
         public bool Send(EmailSections emailSections)
         {
-            string connection = "success";
+            Random random = new Random();
+            int randomNumber = random.Next(0, 9);
 
-            for (int i = 0; i < 7; i++)
+            while (randomNumber > 2)
             {
-                if (connection.Equals("success"))
-                {
-                    Console.WriteLine("Email sent to Mailgun");
-                    return true;
-                }
+                return true;
             }
             return false;
         }

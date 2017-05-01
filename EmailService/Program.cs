@@ -18,8 +18,7 @@ namespace EmailService
             }
             else
             {
-                Console.WriteLine("Enter file name: ");
-                string fileName = Console.ReadLine();
+                string fileName = AskForFilePath();
                 emailsInList = ReadEmailFile(fileName);
             }
 
@@ -29,20 +28,35 @@ namespace EmailService
             Console.ReadLine();
         }
 
+        public static string AskForFilePath()
+        {
+            Console.WriteLine("Enter file name: ");
+            string fileName = Console.ReadLine();
+            return fileName;
+        }
+
         public static List<string> ReadEmailFile(string fileInput)
         {
-            String file = fileInput;
+            string file = fileInput;
             var list = new List<string>();
-            var fileStream2 = new FileStream(file, FileMode.Open, FileAccess.Read);
-            using (var streamReader = new StreamReader(fileStream2, Encoding.UTF8))
+            //handle for a input file name
+            try
             {
-                string line;
-                while ((line = streamReader.ReadLine()) != null)
+                var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
                 {
-                    list.Add(line);
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        list.Add(line);
+                    }
                 }
+                list.ForEach(x => Console.WriteLine(x + ", "));
             }
-            list.ForEach(x => Console.WriteLine(x + ", "));
+            catch (Exception e)
+            {
+                Console.WriteLine("Wrong file path");
+            }
             return list;
         }
 
@@ -50,14 +64,14 @@ namespace EmailService
         {
             List<EmailSections> emailDetailList = new List<EmailSections>();
 
-            foreach(var item in emailsList)
+            foreach (var item in emailsList)
             {
                 string senderEmail = item.Substring(0, item.IndexOf(" ", StringComparison.Ordinal));
                 string receiverEmail = item.Substring(senderEmail.Length + 1, item.IndexOf(" ", senderEmail.Length + 1) - senderEmail.Length);
 
                 int firstQuote = item.IndexOf("\"", StringComparison.Ordinal);
                 string subjectandBody = item.Substring(firstQuote, item.Length - item.IndexOf("\"", firstQuote, StringComparison.Ordinal));
-                
+
                 String[] words = subjectandBody.Split(new string[] { "\" \"" }, StringSplitOptions.None);
                 string subjectEmail = words[0].Remove(0, 1);
                 string bodyEmail = words[1].Remove(words[1].Length - 1);
@@ -77,7 +91,7 @@ namespace EmailService
 
         public static List<EmailSuccessResult> SendEmails(List<EmailSections> emailList)
         {
-            List<EmailSuccessResult> emailResults = new List<EmailSuccessResult>(); 
+            List<EmailSuccessResult> emailResults = new List<EmailSuccessResult>();
             foreach (var item in emailList)
             {
                 emailResults = SendEmail(item, emailResults);
@@ -87,40 +101,56 @@ namespace EmailService
 
         public static List<EmailSuccessResult> SendEmail(EmailSections emailList, List<EmailSuccessResult> emailSuccessResultList)
         {
-            //List<EmailSuccessResult> emailSuccessResultList = new List<EmailSuccessResult>();
-
             Providers providers = new Providers();
             bool sent = false;
             List<int> usedNumbers = new List<int>();
             int attempt = 0;
+            int sentAttempt = 0;
+            List<string> providersList = new List<string>();
 
             while (!sent && attempt < 10)
             {
                 int randomForProvider = GenerateNumberForProvider(usedNumbers);
+                if (usedNumbers.Count() == 3) { break; }
                 usedNumbers.Add(randomForProvider);
-
                 IEmail emailProvider = providers.EmailProviders.ElementAt(randomForProvider);
                 sent = emailProvider.Connect();
-                if (!sent)
+                EmailSuccessResult emailSuccessResult = new EmailSuccessResult();
+                if (!sent && sentAttempt < 0)
                 {
+                    if (emailSuccessResultList.Where(x => x.EmailSender.Equals(emailList.EmailSender)).Count() > 0) 
+                    {
+                        providersList.Add(emailProvider.ToString());
+                    }
+                    else
+                    {
+                        providersList.Add(emailProvider.ToString());
+                        emailSuccessResult.Providers = providersList;
+                        emailSuccessResult.EmailSender = emailList.EmailSender;
+                        emailSuccessResultList.Add(emailSuccessResult);
+                    }
                     attempt++;
                     continue;
                 }
                 else
                 {
-                    sent = emailProvider.Send(emailList);
-                    if (sent)
+                    if(emailSuccessResultList.Where(x => x.EmailSender.Equals(emailList.EmailSender)).Count() > 0)
                     {
-                        emailSuccessResultList.Add(
-                            new EmailSuccessResult
-                            {
-                                EmailSender = emailList.EmailSender,
-                                Provider = emailProvider.ToString()
-                            });
+                        providersList.Add(emailProvider.ToString());
                     }
                     else
                     {
-                        attempt++;
+                        providersList.Add(emailProvider.ToString());
+                        emailSuccessResult.Providers = providersList;
+                        emailSuccessResult.EmailSender = emailList.EmailSender;
+                        emailSuccessResultList.Add(emailSuccessResult);
+                    }
+
+                    sent = emailProvider.Send(emailList);
+
+                    if (sent)
+                    {
+                        sentAttempt++;
                     }
                 }
             }
