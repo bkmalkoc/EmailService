@@ -9,14 +9,14 @@ namespace EmailService
         public int GenerateNumberForProviders(List<int> usedNumbers)
         {
             Random random = new Random();
-            bool okay = false;
+            bool check = false;
             int randomNumber = 0;
-            while (!okay)
+            while (!check)
             {
                 randomNumber = random.Next(0, 3);
                 if (!usedNumbers.Contains(randomNumber))
                 {
-                    okay = true;
+                    check = true;
                 }
             }
             return randomNumber;

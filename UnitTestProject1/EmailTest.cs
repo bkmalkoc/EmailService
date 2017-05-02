@@ -18,16 +18,8 @@ namespace UnitTestProject1
         {
             List<EmailSections> emailSection = new List<EmailSections>();
 
-            EmailSections em = new EmailSections();
-            em.EmailSender = "bb@bb.com";
-            em.EmailBody = "hi";
-            em.EmailSubject = "how are you";
-            em.EmailReceiver = "cc@ccc.com";
-
-            emailSection.Add(em);
-
             var list = new List<EmailSuccessResult>();
-            _mockEmail.Setup(x => x.RetrieveEmails(It.IsAny<List<EmailSections>>())).Returns(list);
+            _mockEmail.Setup(x => x.RetrieveEmails(emailSection)).Returns(list);
 
             List<EmailSuccessResult> result = _mockEmail.Object.RetrieveEmails(emailSection);
 

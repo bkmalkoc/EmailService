@@ -16,8 +16,6 @@ namespace EmailService.UnitTest
         public void Parse_Email_String()
         {
             List<string> emailList = new List<string>();
-            emailList.Add("jlisam@insikt.com xyz@gmail.com \"work work\" \"hello world\"");
-
 
             List<EmailSections> list = new List<EmailSections>();
 

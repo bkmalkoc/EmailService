@@ -11,7 +11,7 @@ namespace EmailService.Model
             Random random = new Random();
             int randomNumber = random.Next(0, 9);
 
-            while (randomNumber > 5)
+            while (randomNumber > 7)
             {
                 return true;
             }

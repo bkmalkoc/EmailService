@@ -37,55 +37,56 @@ namespace EmailService
         public List<EmailSuccessResult> SendEmails(EmailSections emailList, List<EmailSuccessResult> emailSuccessResultList)
         {
             Providers providers = new Providers();
-            bool sent = false;
+            bool connected = true, emailSent = true;
             List<int> usedNumbers = new List<int>();
-            int attempt = 0;
             int sentAttempt = 0;
             List<string> providersList = new List<string>();
 
-            while (!sent)
+            while (connected)
             {
                 if (usedNumbers.Count == 3) { break; }
                 int randomForProvider = GenerateNumberForProviders(usedNumbers);
                 usedNumbers.Add(randomForProvider);
+
                 IProviders emailProvider = providers.EmailProviders.ElementAt(randomForProvider);
-                sent = emailProvider.Connect();
+                connected = emailProvider.Connect();
+
+                bool listContainsSender = emailSuccessResultList.Any(x => x.EmailSender == emailList.EmailSender);
                 EmailSuccessResult emailSuccessResult = new EmailSuccessResult();
-                if (!sent)
+
+                if (connected)
                 {
-                    if (emailSuccessResultList.Where(x => x.EmailSender.Equals(emailList.EmailSender)).Count() > 0)
+                    providersList.Add(emailProvider.GetType().Name);
+                    if (listContainsSender)
                     {
-                        providersList.Add(emailProvider.ToString());
+                        break;
                     }
                     else
                     {
-                        providersList.Add(emailProvider.ToString());
                         emailSuccessResult.Providers = providersList;
                         emailSuccessResult.EmailSender = emailList.EmailSender;
                         emailSuccessResultList.Add(emailSuccessResult);
                     }
-                    attempt++;
-                    continue;
+
+                    emailSent = emailProvider.Send(emailList);
+
+                    if (emailSent)
+                    {
+                        sentAttempt++;
+                    }
                 }
                 else
                 {
-                    if (emailSuccessResultList.Where(x => x.EmailSender.Equals(emailList.EmailSender)).Count() > 0)
+                    providersList.Add(emailProvider.GetType().Name);
+                    if (listContainsSender)
                     {
-                        providersList.Add(emailProvider.ToString());
+                        break;
                     }
                     else
                     {
-                        providersList.Add(emailProvider.ToString());
                         emailSuccessResult.Providers = providersList;
                         emailSuccessResult.EmailSender = emailList.EmailSender;
                         emailSuccessResultList.Add(emailSuccessResult);
-                    }
-
-                    sent = emailProvider.Send(emailList);
-
-                    if (sent)
-                    {
-                        sentAttempt++;
                     }
                 }
             }

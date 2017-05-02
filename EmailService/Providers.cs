@@ -20,6 +20,6 @@ namespace EmailService
             EmailProviders.Add(mailgun);
             EmailProviders.Add(sendGrid);
             EmailProviders.Add(amazonSes);
-        }
+        } 
     }
 }

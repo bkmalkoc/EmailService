@@ -17,7 +17,7 @@ namespace EmailService
             {
                 while (!file.Equals(validValue))
                 {
-                    Console.WriteLine("Enter right input: ");
+                    Console.WriteLine("Enter input.txt: ");
                     file = Console.ReadLine();
                 }
 
@@ -31,9 +31,9 @@ namespace EmailService
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("Wrong file path");
+                Console.WriteLine("Wrong file path: " + ex.Message);
             }
             return list;
         }
