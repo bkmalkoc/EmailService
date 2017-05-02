@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmailService 
+namespace EmailService.Model 
 {
-    class AmazonSES : IEmail
+    class AmazonSES : IProviders
     {
         public bool Connect()
         {

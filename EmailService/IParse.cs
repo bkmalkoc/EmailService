@@ -5,8 +5,9 @@ using System.Text;
 
 namespace EmailService
 {
-    public interface IEmail
+    public interface IParse
     {
-        List<EmailSuccessResult> RetrieveEmails(List<EmailSections> emailList);
+        List<EmailSections> ParseEmailFile(List<string> emailsList);
+
     }
 }

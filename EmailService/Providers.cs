@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmailService.Model;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,7 @@ namespace EmailService
 {
     public class Providers
     {
-        public List<IEmail> EmailProviders;
+        public List<IProviders> EmailProviders;
 
         Mailgun mailgun = new Mailgun();
         SendGrid sendGrid = new SendGrid();
@@ -14,7 +15,7 @@ namespace EmailService
 
         public Providers()
         {
-            EmailProviders = new List<IEmail>();
+            EmailProviders = new List<IProviders>();
             
             EmailProviders.Add(mailgun);
             EmailProviders.Add(sendGrid);

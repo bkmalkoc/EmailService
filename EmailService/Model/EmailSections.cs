@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmailService
+namespace EmailService.Model
 {
     public class EmailSections
     {

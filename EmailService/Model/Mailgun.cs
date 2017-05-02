@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmailService
+namespace EmailService.Model
 {
-    public class Mailgun : IEmail
+    public class Mailgun : IProviders
     {
         public bool Connect()
         {

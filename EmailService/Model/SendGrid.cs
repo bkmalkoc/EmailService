@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmailService
+namespace EmailService.Model
 {
-    class SendGrid : IEmail
+    class SendGrid : IProviders
     {
         public bool Connect()
         {

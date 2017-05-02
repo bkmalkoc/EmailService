@@ -5,8 +5,9 @@ using System.Text;
 
 namespace EmailService
 {
-    public interface IEmail
+    public interface IProviders
     {
-        List<EmailSuccessResult> RetrieveEmails(List<EmailSections> emailList);
+        bool Connect();
+        bool Send(EmailSections emailsections);
     }
 }
